@@ -1,0 +1,276 @@
+﻿@using DoAnLTW.Models;
+@{
+    ViewBag.Title = "TheLoai";
+}
+<!-- JQuery DataTable Css -->
+<link href="~/Areas/Admin/Content/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
+
+
+<div class="block-header">
+    <h2>Thể loại</h2>
+</div>
+<div class="row clearfix">
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+        <div class="card">
+            <div class="body">
+                <h2 class="card-inside-title">Danh sách thể loại</h2>
+                <div class="row clearfix">
+                    <div class="col-sm-12">
+                       
+                                <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Mã loại</th>
+                                            <th>Tên loại</th>
+                                            <th>Số Bài viết</th>
+                                            <th>Chức năng</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody id="TableTheLoai">
+                                        @{
+                                            var TheLoais = FuncDB.GetTheLoais();
+                                            foreach (var Theloai in TheLoais)
+                                            {
+                                                                                <tr>
+                                                                                    <td>@Theloai.ID</td>
+                                                                                    <td>@Theloai.TypeCode</td>
+                                                                                    <td>@Theloai.TypeName</td>
+                                                                                    <td>@Theloai.BaiViets.Count</td>
+                                                                                    <td>
+                                                                                        <div class="btn-group">
+                                                                                            <button type="button" onclick="EditTheLoai(this)" class=" btn btn-warning waves-effect">Sửa</button>
+                                                                                        </div>
+                                                                                        <div class="btn-group">
+                                                                                            <button type="button" onclick="xoaLoai(this)" class="btn btn-danger waves-effect">Xóa</button>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+        <div class="card">
+            <div class="body">
+                <h2 class="card-inside-title">Mã loại</h2>
+                <div class="row clearfix">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <div class="form-line">
+                                <input id="TypeCode" type="text" class="form-control" placeholder="Mã loại">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <h2 class="card-inside-title">Tên thể loại</h2>
+                <div class="row clearfix">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <div class="form-line">
+                                <input id="NameType" type="text" class="form-control" placeholder="Tên Thể Loại">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <h2 class="card-inside-title">Ghi chú:</h2>
+                <div class="row clearfix">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <div class="form-line">
+                                <textarea id="NoteLoai" rows="4" class="form-control no-resize" placeholder="Please type what you want..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+
+
+                <div class="demo-button">
+                    <button onclick="AddLoai()" type="button" class="btn btn-block btn-lg btn-warning waves-effect"><b>Thêm thể loại</b></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalChange" tabindex="-1" role="dialog" style="display: none;">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="largeModalLabel">Chỉnh sửa</h4>
+            </div>
+            <div class="modal-body">
+                <div class="body">
+                    <span hidden="true" id="IDLoaiModal" ></span>
+
+                    <h5 class="card-inside-title">Mã loại</h5>
+                    <div class="row clearfix">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <input disabled="disabled" id="TypeCodeModal" type="text" class="form-control" placeholder="Mã loại">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h5 class="card-inside-title">Tên thể loại</h5>
+                    <div class="row clearfix">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <input id="NameTypeModal" type="text" class="form-control" placeholder="Tên Thể Loại">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h5 class="card-inside-title">Ghi chú:</h5>
+                    <div class="row clearfix">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <textarea id="NoteLoaiModal" rows="4" class="form-control no-resize" placeholder="Please type what you want..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link waves-effect" onclick="ConfirmChange()">SAVE CHANGES</button>
+                <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var docTableChange
+    function ConfirmChange() {
+        var ID = $("#IDLoaiModal").text();
+        var TypeCodeModal = $("#TypeCodeModal").val();
+        var NameTypeModal = $("#NameTypeModal").val();
+        var NoteLoaiModal = $("#NoteLoaiModal").val();
+        $.ajax({
+            type: "POST",
+            url: "/Admin/TheLoai/ConfirmChangeTheLoai",
+            datatype: 'json',
+            data: { ID: ID, TypeCode: TypeCodeModal, TypeName: NameTypeModal, Note: NoteLoaiModal},
+            success: (data) => {
+                var json = JSON.parse(data);
+                if (json) {
+                    alert("Chỉnh sửa thành công");
+                    docTableChange.parentElement.parentNode.parentNode.children[2].innerText = json.TypeName
+                    $("#modalChange").modal("hide");
+                }
+            }
+        })
+    }
+    function EditTheLoai(doc) {
+        docTableChange = doc
+        var ID = doc.parentElement.parentNode.parentNode.children[0].innerHTML
+        $("#modalChange").modal();
+        $.ajax({
+            type: "POST",
+            url: "/Admin/TheLoai/GetTheLoai",
+            datatype: 'json',
+            data: { ID: ID },
+            success: (data) => {
+                var json = JSON.parse(data);
+                console.log(json)
+                if (json) {
+                    $("#TypeCodeModal").val(json.TypeCode);
+                    $("#NameTypeModal").val(json.TypeName);
+                    $("#NoteLoaiModal").val(json.Note);
+                    $("#IDLoaiModal").text(json.ID);
+                }
+            }
+        })
+    }
+    function xoaLoai(doc) {
+        if (!confirm("Bạn có chắc là muốn xóa loại này Mọi bài viết liên qua sẽ bị xóa hết?")) {
+            return;
+        }
+        var ID = doc.parentElement.parentNode.parentNode.children[0].innerHTML
+        var TypeCode = doc.parentElement.parentNode.parentNode.children[1].innerHTML
+        $.ajax({
+            type: "POST",
+            url: "/Admin/TheLoai/XoaTheLoai",
+            datatype: 'json',
+            data: { ID: ID, TypeCode: TypeCode },
+            success: (data) => {
+                var json = JSON.parse(data);
+                if (json.Error == false) {
+                    var tr = doc.parentElement.parentNode.parentNode
+                    $('.dataTable').DataTable().row(tr).remove().draw(false);
+                }
+                alert(json.Message)
+            }
+        })
+    }
+    function AddLoai() {
+        const NoteLoai = $("#NoteLoai").val()
+        const NameType = $("#NameType").val()
+        const TypeCode = $("#TypeCode").val()
+        if (!NoteLoai || !NameType || !TypeCode) {
+            return alert("Vui lòng nhập đầy đủ thông tin")
+        }
+        var dataPost = new FormData();
+        dataPost.append("NoteLoai", NoteLoai);
+        dataPost.append("NameType", NameType);
+        dataPost.append("TypeCode", TypeCode);
+        $.ajax({
+            type: "POST",
+            url: "/Admin/TheLoai/PostAddTheLoai",
+            datatype: 'json',
+            contentType: false,
+            processData: false,
+            async: false,
+            data: dataPost,
+            success: (data) => {
+                var json = JSON.parse(data);
+                if (json.Error == false && json.Data != null) {
+                    $('.dataTable').DataTable().row.add([json.Data.ID, json.Data.TypeCode, json.Data.TypeName, json.Data.BaiViets.length, `<div class="btn-group">
+                                                            <button onclick="EditTheLoai(this)" type="button" class=" btn btn-warning waves-effect">Sửa</button>
+                                                        </div>
+                                                        <div class="btn-group">
+                                                            <button onclick="xoaLoai(this)" type="button" class="btn btn-danger waves-effect">Xóa</button>
+                                                        </div>`
+                    ]).draw();
+
+                }
+                alert(json.Message)
+            }
+        });
+    }
+
+</script>
+
+
+<!-- Jquery DataTable Plugin Js -->
+<script src="~/Areas/Admin/Content/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/Areas/Admin/Content/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/Areas/Admin/Content/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/Areas/Admin/Content/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/Areas/Admin/Content/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/Areas/Admin/Content/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/Areas/Admin/Content/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/Areas/Admin/Content/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/Areas/Admin/Content/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+
+<script src="~/Areas/Admin/Content/js/pages/tables/jquery-datatable.js"></script>

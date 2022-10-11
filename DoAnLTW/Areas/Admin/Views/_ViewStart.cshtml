@@ -1,0 +1,15 @@
+﻿@{ 
+    if(Session["Admin"]==null && !Request.Url.AbsoluteUri.Contains("Admin/Login"))
+    {
+        Response.Redirect("/Admin/Login");
+        return;
+    }
+    else if(!Request.Url.AbsoluteUri.Contains("Admin/Login"))
+    {
+        Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+    }
+    
+}
+
+

@@ -1,0 +1,184 @@
+﻿@using DoAnLTW.Models;
+
+@{
+    ViewBag.Title = "Trang chủ";
+
+
+}
+<div class='flex-center' id='ticker-wrapper'>
+    <div class='ticker container row-x1 section' id='ticker' name='ticker News'>
+        <div class='widget PopularPosts' data-version='2' id='PopularPosts1'>
+            <div class='widget-title'><h3 class='title'>News:</h3></div>
+            <div class='widget-content'>
+                <div class='ticker-items'>
+                    @{
+                        var baivietss = FuncDB.GetBaiVietNew();
+                        for (int i = 0; i < baivietss.Count; i++)
+                        {
+                            <div class='ticker-item item-@i'>
+                                <h2 class='entry-title'><a href='/BaiViet/ViewBaiViet/@baivietss[i].ID' title='@baivietss[i].Title '>@baivietss[i].Title </a></h2>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Featured Posts -->
+<div class='flex-center' id='featured-wrapper'>
+    <div class='featured container row-x1 section' id='featured' name='Featured News'>
+        <div class='widget PopularPosts' data-version='2' id='PopularPosts3'>
+            <div class='widget-content'>
+                <div class='featured-items'>
+                    @{
+                        for (int i = 0; i < baivietss.Count; i++)
+                        {
+                            <div class='featured-item cs item-@i'>
+                                <a class='featured-inner' href='/BaiViet/ViewBaiViet/@baivietss[i].ID' title='@baivietss[i].Title '>
+                                    <span class='entry-image-wrap before-mask is-image'>
+                                        <span class='entry-thumb' data-image='@baivietss[i].ImageThumbnail.Replace("~/", "")'></span>
+                                    </span>
+                                    <div class='entry-header entry-info'>
+                                        <h2 class='entry-title'>@baivietss[i].Title </h2>
+                                        <div class='entry-meta'>
+                                            <span class='entry-author mi'><span class='sp'>by</span><span class='author-name'>@baivietss[i].Author</span></span>
+                                            <span class='entry-time mi'><span class='sp'>&#8226;</span><time class='published' datetime='@baivietss[i].EntryTime'>@baivietss[i].EntryTime</time></span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Content Wrapper -->
+<div class='flex-center' id='content-wrapper'>
+    <div class='container row-x1'>
+        <!-- Main Wrapper -->
+        <main class='has-cs2' id='main-wrapper'>
+            <div class='content-section section' id='content-section-1' name='Content Section 1'>
+
+
+                @{
+                    var TheLoais = FuncDB.GetTheLoais();
+
+                    foreach (var Theloai in TheLoais)
+                    {
+
+
+                        <div class="widget HTML is-visible type-grid" data-version="2" id="HTML12">
+                            <div class="widget-title title-wrap">
+                                <h3 class="title">@Theloai.TypeName</h3><a href="/BaiViet/ViewType?type=@Theloai.TypeCode" class="wt-l">Xem tất cả</a>
+                            </div>
+                            <div class="widget-content">
+                                <div class="content-block grid-items">
+                                    @{
+                                        int i = 0;
+
+                                        var Baiviets = FuncDB.GetBaiVietLoaiCount(Theloai.TypeCode, 3);
+                                        foreach (var baiv in Baiviets)
+                                        {
+
+
+                                            <div class="grid-item item-@i++">
+                                                <a title="@baiv.Title"
+                                                   class="entry-image-wrap is-image"
+                                                   href='/BaiViet/ViewBaiViet/@baiv.ID'>
+                                                    <span class="entry-thumb lazy-ify"
+                                                          data-image="@baiv.ImageThumbnail.Replace("~/", "")"
+                                                          style="background-image:url(@baiv.ImageThumbnail.Replace("~/", ""))"></span>
+                                                </a>
+                                                <div class="entry-header">
+                                                    <h2 class="entry-title">
+                                                        <a title="Tìm hiểu RPM là gì? Một số cách cải thiện RPM Google Adsense"
+                                                           href="/BaiViet/ViewBaiViet/@baiv.ID">
+                                                            @baiv.Title
+                                                        </a>
+                                                    </h2>
+                                                    <div class="entry-meta">
+                                                        <span class="entry-time mi">
+                                                            <time class="published"
+                                                                  datetime="2021-11-25T05:01:00.000-08:00">@baiv.EntryTime</time>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            }
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+
+
+
+
+
+
+        </main>
+        <script type='text/javascript'>
+            var exportify = {
+                noTitle: "Không có tiêu đề",
+                viewAll: "Xem tất cả",
+                postAuthor: false,
+                postAuthorLabel: "",
+                postDate: true,
+                postDateLabel: "&#8226;"
+            }
+        </script>
+        <!-- Sidebar Wrapper -->
+        <aside id='sidebar-wrapper'>
+            <div class='sidebar chubang9x-com-widget-ready section' id='sidebar' name='Thanh bên'>
+                <div class='widget LinkList' data-version='2' id='LinkList1'>
+                    <div class='widget-title title-wrap'><h3 class='title'>Follow Us</h3></div>
+                    <div class='widget-content'>
+                        <ul class='social-icons social social-bg'>
+                            <li class='facebook link-0'><a alt='facebook' class='facebook btn' href='@FuncDB.GetSetting().LinkFb #LinkFb' rel='noopener noreferrer' target='_blank' title='facebook'></a></li>
+                            <li class='twitter link-1'><a alt='twitter' class='twitter btn' href='@FuncDB.GetSetting().Twitter #Twitter' rel='noopener noreferrer' target='_blank' title='twitter'></a></li>
+                            <li class='youtube link-2'><a alt='youtube' class='youtube btn' href='@FuncDB.GetSetting().YouTube #Youtube' rel='noopener noreferrer' target='_blank' title='youtube'></a></li>
+                            <li class='instagram link-3'><a alt='instagram' class='instagram btn' href='@FuncDB.GetSetting().Instagram #Instagram' rel='noopener noreferrer' target='_blank' title='instagram'></a></li>
+                        </ul>
+                    </div>
+                </div><div class='widget PopularPosts' data-version='2' id='PopularPosts2'>
+                    <div class='widget-title title-wrap'><h3 class='title'>Popular Posts</h3></div>
+                    <div class='widget-content default-items'>
+
+
+                        @{
+                            int izzzz = 0;
+
+                            var Baivietssssssssss = FuncDB.GetBaiVietCounts(10);
+                            foreach (var baiv in Baivietssssssssss)
+                            {
+                                <div class='default-item ds item-@izzzz++'>
+                                    <a class='entry-image-wrap is-image' href='/BaiViet/ViewBaiViet/@baiv.ID' title='@baiv.Title'>
+                                        <span class='entry-thumb' data-image='@baiv.ImageThumbnail.Replace("~/", "")'></span>
+                                    </a>
+                                    <div class='entry-header'>
+                                        <h2 class='entry-title'><a href='/BaiViet/ViewBaiViet/@baiv.ID' title='@baiv.Title'>@baiv.Title</a></h2>
+                                        <div class='entry-meta'><span class='entry-time mi'><time class='published' datetime='2021-09-16T01:36:00-07:00'>@baiv.EntryTime</time></span></div>
+                                    </div>
+                                </div>
+
+                             
+                            }
+                        }
+
+
+
+                        
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+
